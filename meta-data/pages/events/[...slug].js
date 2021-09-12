@@ -1,12 +1,12 @@
-import { Fragment, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import { Fragment, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import useSWR from "swr";
+import Head from "next/head";
 
-import { getFilteredEvents } from '../../helpers/api-util';
-import EventList from '../../components/events/event-list';
-import ResultsTitle from '../../components/events/results-title';
-import Button from '../../components/ui/button';
-import ErrorAlert from '../../components/ui/error-alert';
+import EventList from "../../components/events/event-list";
+import ResultsTitle from "../../components/events/results-title";
+import Button from "../../components/ui/button";
+import ErrorAlert from "../../components/ui/error-alert";
 
 function FilteredEventsPage(props) {
   const [loadedEvents, setLoadedEvents] = useState();
@@ -15,7 +15,7 @@ function FilteredEventsPage(props) {
   const filterData = router.query.slug;
 
   const { data, error } = useSWR(
-    'https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json'
+    "https://nextjs-course-c81cc-default-rtdb.firebaseio.com/events.json"
   );
 
   useEffect(() => {
@@ -32,16 +32,33 @@ function FilteredEventsPage(props) {
       setLoadedEvents(events);
     }
   }, [data]);
-
-  if (!loadedEvents) {
-    return <p className='center'>Loading...</p>;
-  }
-
+  const PageHeadData = (
+    <Head>
+      <title></title>
+      <meta name="description" content="" />
+    </Head>
+  );
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
 
   const numYear = +filteredYear;
   const numMonth = +filteredMonth;
+
+  PageHeadData = (
+    <Head>
+      <title></title>
+      <meta name="description" content="" />
+    </Head>
+  );
+
+  if (!loadedEvents) {
+    return (
+      <Fragment>
+        {PageHeadData}
+        <p className="center">Loading...</p>;
+      </Fragment>
+    );
+  }
 
   if (
     isNaN(numYear) ||
@@ -57,8 +74,8 @@ function FilteredEventsPage(props) {
         <ErrorAlert>
           <p>Invalid filter. Please adjust your values!</p>
         </ErrorAlert>
-        <div className='center'>
-          <Button link='/events'>Show All Events</Button>
+        <div className="center">
+          <Button link="/events">Show All Events</Button>
         </div>
       </Fragment>
     );
@@ -78,8 +95,8 @@ function FilteredEventsPage(props) {
         <ErrorAlert>
           <p>No events found for the chosen filter!</p>
         </ErrorAlert>
-        <div className='center'>
-          <Button link='/events'>Show All Events</Button>
+        <div className="center">
+          <Button link="/events">Show All Events</Button>
         </div>
       </Fragment>
     );
@@ -89,6 +106,7 @@ function FilteredEventsPage(props) {
 
   return (
     <Fragment>
+      {PageHeadData}
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
